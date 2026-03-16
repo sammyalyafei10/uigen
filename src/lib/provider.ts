@@ -511,7 +511,7 @@ export function getLanguageModel() {
 
   if (!apiKey || apiKey.trim() === "") {
     console.log("No ANTHROPIC_API_KEY found, using mock provider");
-    return new MockLanguageModel("mock-claude-sonnet-4-0");
+    return new MockLanguageModel("mock-claude-sonnet-4-0") as any;
   }
 
   return anthropic(MODEL);
