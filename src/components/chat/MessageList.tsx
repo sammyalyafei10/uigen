@@ -1,6 +1,7 @@
 "use client";
 
-import { Message } from "ai";
+import { UIMessage } from "ai";
+type Message = UIMessage & { content?: string };
 import { cn } from "@/lib/utils";
 import { User, Bot, Loader2 } from "lucide-react";
 import { MarkdownRenderer } from "./MarkdownRenderer";
@@ -71,30 +72,33 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
                             return (
                               <div key={partIndex} className="mt-3 p-3 bg-white/50 rounded-md border border-neutral-200">
                                 <span className="text-xs font-medium text-neutral-600 block mb-1">Reasoning</span>
-                                <span className="text-sm text-neutral-700">{part.reasoning}</span>
+                                <span className="text-sm text-neutral-700">{part.text}</span>
                               </div>
                             );
-                          case "tool-invocation":
-                            const tool = part.toolInvocation;
+                          case "dynamic-tool": {
+                            const p = part as any;
+                            const isDone = p.state === "output" || p.state === "result";
                             return (
                               <div key={partIndex} className="inline-flex items-center gap-2 mt-2 px-3 py-1.5 bg-neutral-50 rounded-lg text-xs font-mono border border-neutral-200">
-                                {tool.state === "result" && tool.result ? (
+                                {isDone ? (
                                   <>
                                     <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                                    <span className="text-neutral-700">{tool.toolName}</span>
+                                    <span className="text-neutral-700">{p.toolName}</span>
                                   </>
                                 ) : (
                                   <>
                                     <Loader2 className="w-3 h-3 animate-spin text-blue-600" />
-                                    <span className="text-neutral-700">{tool.toolName}</span>
+                                    <span className="text-neutral-700">{p.toolName}</span>
                                   </>
                                 )}
                               </div>
                             );
-                          case "source":
+                          }
+                          case "source-url":
+                          case "source-document":
                             return (
                               <div key={partIndex} className="mt-2 text-xs text-neutral-500">
-                                Source: {JSON.stringify(part.source)}
+                                Source: {JSON.stringify((part as any).source ?? part)}
                               </div>
                             );
                           case "step-start":

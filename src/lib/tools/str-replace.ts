@@ -15,7 +15,7 @@ const TextEditorParameters = z.object({
 export const buildStrReplaceTool = (fileSystem: VirtualFileSystem) => {
   return tool({
     description: "View, create, or edit files in the virtual file system.",
-    parameters: TextEditorParameters,
+    inputSchema: TextEditorParameters,
     execute: async ({
       command,
       path,
