@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   const result = streamText({
     model,
     messages,
-    maxTokens: 10_000,
+    maxOutputTokens: 10_000,
     maxSteps: isMockProvider ? 4 : 40,
     onError: (err: any) => {
       console.error(err);
